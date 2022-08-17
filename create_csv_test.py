@@ -83,7 +83,7 @@ def generate_quantity(num):
     return lst
 
 try:
-    os.mkdir("Inputs")
+    os.mkdir("Input")
 except Exception:
     pass
 
