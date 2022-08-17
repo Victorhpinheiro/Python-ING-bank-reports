@@ -1,23 +1,35 @@
+""" 
+Created by Victor Pinheiro 
+all rights reserved
+Version 1.0
+"""
+
 import os
 import sqlite3
+import sys
+import subprocess
+try:
+    subprocess.check_call([sys.executable, '-m', 'pip', 'install', 
+    'matplotlib==3.5.3'])
+except Exception:
+    pass
 from matplotlib.backends.backend_pdf import PdfPages
+
 
 import define_final_info as info
 import SQL_queries as qr
 import create_update_db as db
 
 
-""" Created by Victor Pinheiro 
-all rights reserved
-Version 1.0
-"""
-file_gen = ".\\Input\\conta_test.csv"
+file_gen = ".\\Input\\conta.csv"
 acc_info_dic = {"General": 1}
 YEAR_CUR = '2022'
 REPORTS_FIGS = []
 
 if __name__ == '__main__':
 
+    #check and install matplotlib
+    
     db.create_db()
 
     conn = sqlite3.connect("banking.sqlite")

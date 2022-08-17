@@ -3,7 +3,7 @@ import random
 import datetime
 import os
 
-FILE_NAME = ".\\Input\\conta_test.csv"
+FILE_NAME = ".\\Input\\conta.csv"
 HEADERS = ['Date', 'Description', 'Credit', 'Debit', 'Balance']
 DATE_START = datetime.datetime(2020, 1, 2)
 DATE_END = datetime.datetime(2022, 12, 30)
