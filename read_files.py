@@ -64,3 +64,19 @@ def read_csv(acc_name, file):
                 line["Debit"],
                 line["Balance"],
             )
+
+
+a = "23/12/1992"
+
+
+def format_date(date):
+    # Format date into the ISO8601 in order to add to the db
+    # Consider the input date in the format dd/mm/yyyy
+    new_date = date.split("/")
+    new_date.reverse()
+    new_date = "-".join(new_date)
+
+    return new_date
+
+
+
