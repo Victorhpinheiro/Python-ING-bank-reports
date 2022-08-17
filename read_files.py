@@ -1,4 +1,5 @@
 import csv
+from msilib.schema import Error
 
 
 class Row:
@@ -51,23 +52,22 @@ def read_csv(acc_name, file):
     """
     Consider the CSV file from the bank ING and return all the information as a list of rows objects
     """
-    with open(file, "r") as f:
-        csv_reader = csv.DictReader(f)
-        next(csv_reader)
+    try:
+        with open(file, "r") as f:
+            csv_reader = csv.DictReader(f)
+            next(csv_reader)
 
-        for line in csv_reader:
-            yield Row(
-                acc_name,
-                line["Date"],
-                line["Description"],
-                line["Credit"],
-                line["Debit"],
-                line["Balance"],
-            )
-
-
-a = "23/12/1992"
-
+            for line in csv_reader:
+                yield Row(
+                    acc_name,
+                    line["Date"],
+                    line["Description"],
+                    line["Credit"],
+                    line["Debit"],
+                    line["Balance"],
+                )
+    except:
+        raise Error("Couldn't Open the CSV")
 
 def format_date(date):
     # Format date into the ISO8601 in order to add to the db

@@ -2,12 +2,19 @@ import matplotlib.pyplot as plt
 import matplotlib
 import numpy as np
 
+FIG_WIDTH = 21
+FIG_HEIGHT = 13
+
 MONTH_MAP = {
             '01': 'January', '02': 'February', '03': 'March',
             '04': 'April', '05': 'May', '06': 'June',
             '07': 'July', '08': 'August', '09': 'September',
             '10': 'October', '11': 'November', '12': 'December'
             }
+def func(pct, allvals):
+    '''Format the auto % of the pie chart'''
+    absolute = int(np.round(pct/100.*np.sum(allvals)))
+    return "{:.1f}%\n(${:,.2f} )".format(pct, absolute)
 
 class All_years_total:
     """receive total value of all years of credit and debit without considering Internal transfers in asc order"""
@@ -38,7 +45,7 @@ class All_years_total:
             return
     
         fig, ax = plt.subplots()  # Instance of Bar chart
-        fig.set(figwidth=13, figheight=8)
+        fig.set(figwidth=FIG_WIDTH, figheight=FIG_HEIGHT)
         plt.style.use('seaborn')  # Define style
         # Prepare X array and the width of the bars
         x_index = np.arange(length)
@@ -62,19 +69,19 @@ class All_years_total:
 
         #Add text with difference info
         diff = self.diff_by_year()
-        tittle = "Difference by year:     \n\n"
+        tittle = "Difference by year:     \n\n\n"
         line = []
         for key, value in diff.items():
-            line.append(f"{key}: ${value:,.2f} \n")
+            line.append(f"{key}: ${value:,.2f} \n\n")
         final_text = tittle + "".join(line)
 
         fig.tight_layout()
-        fig.text(0.65, 0.8, final_text, ha='left', va='center', size=20, color='b')
+        fig.text(0.65, 0.8, final_text, ha='left', va='center', size=20, color='black')
         fig.subplots_adjust(right=0.62)
 
-        fig.savefig("foo.pdf", bbox_inches='tight')
-
+        # fig.savefig("foo.pdf", bbox_inches='tight')
         # plt.show()
+        return fig
 
     def diff_by_year(self):
         length = len(self.list_all_years)
@@ -108,9 +115,9 @@ class Month_by_month:
 
     def add_expense(self, date, expense, description):
         if len(self.expenses) < 1:
-            self.expenses.append(f"TOP 5 OTHER EXPENSES MONTH - {MONTH_MAP[self.month]}\n\n")
+            self.expenses.append(f"TOP 5 OTHER EXPENSES MONTH - {MONTH_MAP[self.month]}/{self.year}\n\n\n")
 
-        self.expenses.append(f"{date}: ${expense:,.2f} - {description[:20]}\n")
+        self.expenses.append(f"{date}: ${expense:,.2f} - {description[:20]}\n\n")
 
     def set_title(self, title):
         self.title = title
@@ -123,19 +130,17 @@ class Month_by_month:
             return
     
         fig, ax = plt.subplots()  # Instance of Bar chart
-        fig.set(figwidth=20, figheight=8)
+        fig.set(figwidth=FIG_WIDTH, figheight=FIG_HEIGHT)
         plt.style.use('seaborn')  # Define style
 
         # Prepare X array and the width of the bars
-        x_index = np.arange(length)
-        width = 0.8
+        width = 0.35
     
         # Add the bar that will be plotted in a variable color='#fa7e61'
-        rec = ax.bar(self.categories , self.list_values, width=width)
+        rec = ax.bar(self.categories, self.list_values, width=width, color='#fa7e61')
 
         # ax.legend()  # Add color legend
         ax.set_title(self.title, fontsize=20)
-        # ax.set_xticks(ticks=x_index, labels=self.list_all_years)  # pass year as X layer
         ax.set_ylabel("Value $", fontsize='large')
         ax.set_xlabel("Categories", fontsize='large')
         ax.yaxis.set_major_formatter('${x:,.2f}')
@@ -150,11 +155,12 @@ class Month_by_month:
             final_text = None
 
         fig.tight_layout()
-        fig.text(0.65, 0.8, final_text, ha='left', va='center', size=20, color='#010001')
+        fig.text(0.65, 0.7, final_text, ha='left', va='center', size=20, color='#010001')
         fig.subplots_adjust(right=0.62)
 
         # fig.savefig("foo.pdf", bbox_inches='tight')
-        plt.show()
+        # plt.show()
+        return fig
 
 
 class Category_year_pie:
@@ -176,9 +182,9 @@ class Category_year_pie:
 
     def add_expense(self, date, expense, description):
         if len(self.expenses) < 1:
-            self.expenses.append(f"TOP 10 OTHER EXPENSES YEAR - {self.year}\n\n")
+            self.expenses.append(f"TOP 10 OTHER EXPENSES YEAR - {self.year}\n\n\n")
 
-        self.expenses.append(f"{date}: ${expense:,.2f} - {description[:20]}\n")
+        self.expenses.append(f"{date}: ${expense:,.2f} - {description[:20]}\n\n")
 
     def set_title(self, title):
         self.title = title
@@ -189,75 +195,86 @@ class Category_year_pie:
         if not length == len(self.list_values):
             print("Values and Categories are not the same length")
             return
-    
-        fig, ax = plt.subplots(subplot_kw=dict(aspect="equal"))  # Instance of Bar chart
-        fig.set(figwidth=20, figheight=8)
+
+        color = ['#ff9999', '#edff86', '#66b3ff', '#fa7e61', '#ffcc99', "#bc5f04", '#f4442e',
+                '#48acf0','#93a3bc', '#41ead4', '#e6ccbe', '#edff86', '#f3c969', '#ecd444', '#8cad7e']
+        colors = color[:length]
+
+        fig, ax = plt.subplots()
+        fig.set(figwidth=FIG_WIDTH, figheight=FIG_HEIGHT)
         # plt.style.use('seaborn')  # Define style
 
-        wedges, texts, autotexts = ax.pie(self.list_values, autopct=lambda pct: func(pct, self.list_values), textprops=dict(color="w"))
-
+        wedges, texts, autotexts = ax.pie(self.list_values, colors=colors, autopct=lambda pct: func(pct, self.list_values), textprops=dict(color="black"))
         ax.legend(wedges, self.categories,
                         title="Categproes",
                         loc="center left",
                         bbox_to_anchor=(1, 0, 0.5, 1))
         
-        plt.setp(autotexts, size=8, weight="bold")
+        plt.setp(autotexts, size=9, weight="bold")
 
-        ax.set_title("Matplotlib bakery: A pie")
-        plt.show()
-
-        # # ax.legend()  # Add color legend
+        ax.set_title(f"Expenses by Category - Year {self.year}", fontsize=20)
         # ax.set_title(self.title, fontsize=20)
-        # # ax.set_xticks(ticks=x_index, labels=self.list_all_years)  # pass year as X layer
-        # ax.set_ylabel("Value $", fontsize='large')
-        # ax.set_xlabel("Categories", fontsize='large')
-        # ax.yaxis.set_major_formatter('${x:,.2f}')
+        if len(self.expenses) >= 1:
+            final_text = "".join(self.expenses)
+        else:
+            final_text = None
 
-        # # Add value on the bad and format nicely
-        # ax.bar_label(rec, labels=[f'${x:,.2f}' for x in self.list_values], fontsize='large')
-        # ax.grid(True, alpha=0.4)
-
-        # if len(self.expenses) >= 1:
-        #     final_text = "".join(self.expenses)
-        # else:
-        #     final_text = None
-
-        # fig.tight_layout()
-        # fig.text(0.65, 0.8, final_text, ha='left', va='center', size=20, color='#010001')
-        # fig.subplots_adjust(right=0.62)
+        fig.tight_layout()
+        fig.text(0.65, 0.5, final_text, ha='left', va='center', size=20, color='#010001')
+        fig.subplots_adjust(right=0.58)
 
         # # fig.savefig("foo.pdf", bbox_inches='tight')
         # plt.show()
-def func(pct, allvals):
-    absolute = int(np.round(pct/100.*np.sum(allvals)))
-    return "{:.1f}%\n(${:,.2f})".format(pct, absolute)
-    
+        return fig
 
 
+class Year_total_income:
+    """receive total value of all years of credit and debit without considering Internal transfers in asc order"""
 
-
-
-class Year_avg_plot:
     def __init__(self, year) -> None:
-        self.name = []
-        self.sum = []
+        self.year = year
+        self.values_credit = []  # have to be same len of all years
+        self.month = []
+        self.title = ""
 
+    def add_credit(self, credit):
+        self.values_credit.append(credit)
+    
+    def add_month(self, month):
+        self.month.append(month)
+    
+    def set_title(self, title):
+        self.title = title
 
-class All_years:
-    def __init__(self) -> None:
-        pass
+    def plot_info(self):
+        # Check if everything is same size
+        length = len(self.month)
+        if not length == len(self.values_credit):
+            print("Values of indivual months are not the same length than credit")
+            return
+    
+        fig, ax = plt.subplots()  # Instance of Bar chart
+        fig.set(figwidth=FIG_WIDTH, figheight=FIG_HEIGHT)
+        plt.style.use('seaborn')  # Define style
+        # Prepare X array and the width of the bars
+        x_index = np.arange(length)
+        width = 0.8
+    
+        # Add the bar that will be plotted in a variable
+        rec_credit = ax.bar(x_index, self.values_credit, width=width, color='#6bbf59', label='Income')
+        labels = [MONTH_MAP[i] for i in self.month]
 
+        ax.legend()  # Add color legend
+        ax.set_title(self.title, fontsize=20)
+        ax.set_xticks(ticks=x_index, labels=labels)  # pass year as X layer
+        ax.set_ylabel("Value $", fontsize='large')
+        ax.set_xlabel("Months", fontsize='large')
+        ax.yaxis.set_major_formatter('${x:,.2f}')
 
-class All_years:
-    def __init__(self) -> None:
-        pass
+        # Add value on the bad and format nicely
+        ax.bar_label(rec_credit, labels=[f'${x:,.2f}' for x in self.values_credit], fontsize='large')
+        ax.grid(True, alpha=0.1)
 
-
-class All_years:
-    def __init__(self) -> None:
-        pass
-
-
-def func(pct, allvals):
-    absolute = int(np.round(pct/100.*np.sum(allvals)))
-    return "{:.1f}%\n({:d} g)".format(pct, absolute)
+        # plt.show()
+        return fig
+        
