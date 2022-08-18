@@ -26,9 +26,9 @@ ALL_ACCOUNTS_INCOME_MONTHLY_VAR = """SELECT
                                     strftime('%m', date) as month,
                                     ROUND(SUM(credit),2) AS credit
                                     FROM (SELECT * FROM transactions AS t JOIN categories AS c ON t.category_id = c.id JOIN acc_info AS a ON t.account_id = a.id)
-                                    WHERE category != 'Internal' AND credit > 0
+                                    WHERE category != 'Internal' AND strftime('%Y', date) = ?
                                     GROUP BY 1
-                                    HAVING strftime('%Y', date) = ? and credit > 0
+                                    HAVING CREDIT > 0
                                     """
 
 
@@ -86,6 +86,100 @@ MOST_EXPENSIVE_OTHERS_YEAR = """SELECT
                                     FROM (SELECT * FROM transactions AS t JOIN categories AS c ON t.category_id = c.id JOIN acc_info AS a ON t.account_id = a.id)
                                     WHERE category = 'Other' AND debit < 0
                                     GROUP BY 2,3
+                                    HAVING strftime('%Y', date) = ? 
+                                    ORDER BY debit ASC
+                                    LIMIT 10
+                                    """
+
+####################################################################################################################
+# Calulate ALL YEAR CREDIT vs DEBIT - INDIVIDUAL ACC
+####################################################################################################################
+INDIVIDUAL_ACCOUNT_ALL_YEARS_SUM = """SELECT
+                            strftime('%Y', date),
+                            ROUND(SUM(credit),2) AS total_deposits,
+                            ROUND(SUM(debit),2) AS total_debit
+                            FROM (SELECT * FROM transactions AS t JOIN categories AS c ON t.category_id = c.id JOIN acc_info AS a ON t.account_id = a.id)
+                            WHERE category_id != (SELECT id FROM categories WHERE category = 'Internal') AND
+                            acc = ?
+                            GROUP BY 1
+                            """
+
+####################################################################################################################
+# Calulate Income by month - INDIVIDUAL ACC
+####################################################################################################################
+INDIVIDUAL_ACCOUNT_INCOME_MONTHLY_VAR = """SELECT
+                                    strftime('%m', date) as month,
+                                    acc,
+                                    ROUND(SUM(credit),2) AS credit
+                                    FROM (SELECT * FROM transactions AS t JOIN categories AS c ON t.category_id = c.id JOIN acc_info AS a ON t.account_id = a.id)
+                                    WHERE category != 'Internal' AND strftime('%Y', date) = ? AND
+                                    acc = ?
+                                    GROUP BY 1, 2
+                                    HAVING CREDIT > 0
+                                    """
+
+
+####################################################################################################################
+# Calulate Expenses by category by month + top 5 expenses of the month - INDIVIDUAL ACC
+####################################################################################################################
+INDIVIDUAL_ACCOUNT_CAT_EXPENSES_MONTHLY_VAR = """SELECT
+                                    strftime('%m', date),
+                                    category,
+                                    acc,
+                                    ROUND(SUM(credit),2) AS credit,
+                                    ROUND(SUM(debit),2) AS debit
+                                    FROM (SELECT * FROM transactions AS t JOIN categories AS c ON t.category_id = c.id JOIN acc_info AS a ON t.account_id = a.id)
+                                    WHERE category != 'Internal' AND acc =?
+                                    GROUP BY 1, 2, 3
+                                    HAVING strftime('%Y', date) = ? AND
+                                    strftime('%m', date) = ?
+                                    """
+
+INDIVIDUAL_ACCOUNT_HIGH_OTHER_EXPESES_MONTHLY = """SELECT
+                                    date,
+                                    strftime('%m', date),
+                                    description,
+                                    acc,
+                                    category,
+                                    debit,
+                                    description
+                                    FROM (SELECT * FROM transactions AS t JOIN categories AS c ON t.category_id = c.id JOIN acc_info AS a ON t.account_id = a.id)
+                                    WHERE category = 'Other' AND debit < 0 and
+                                    acc = ?
+                                    GROUP BY 2, 3, 4
+                                    HAVING strftime('%Y', date) = ? AND
+                                    strftime('%m', date) = ?
+                                    ORDER BY debit ASC
+                                    LIMIT 5
+                                    """
+
+####################################################################################################################
+# Calulate Expenses by category by year PIE + top 10 expenses of the year - INDIVIDUAL ACC
+####################################################################################################################
+INDIVIDUAL_ACCOUNT_CAT_YEAR_VAR = """SELECT
+                                    strftime('%Y', date),
+                                    category,
+                                    acc,
+                                    ROUND(SUM(debit),2) AS debit
+                                    FROM (SELECT * FROM transactions AS t JOIN categories AS c ON t.category_id = c.id JOIN acc_info AS a ON t.account_id = a.id)
+                                    WHERE category != 'Internal' AND debit < 0 AND
+                                    acc = ?
+                                    GROUP BY 1, 2
+                                    HAVING strftime('%Y', date) = ?
+                                    """
+
+INDIVIDUAL_MOST_EXPENSIVE_OTHERS_YEAR = """SELECT
+                                    date,
+                                    strftime('%Y', date),
+                                    description,
+                                    acc,
+                                    category,
+                                    debit,
+                                    description
+                                    FROM (SELECT * FROM transactions AS t JOIN categories AS c ON t.category_id = c.id JOIN acc_info AS a ON t.account_id = a.id)
+                                    WHERE category = 'Other' AND debit < 0 AND
+                                    acc = ?
+                                    GROUP BY 2,3,4
                                     HAVING strftime('%Y', date) = ? 
                                     ORDER BY debit ASC
                                     LIMIT 10
