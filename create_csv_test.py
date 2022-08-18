@@ -1,17 +1,25 @@
+'''
+Created by Victor Pinheiro
+All rights reserved
+Solo file that will create a mock csv export from the bank ING Australia
+there is a function to test efficiency and one for quality
+'''
+
 import csv
 import random
 import datetime
 import os
+from collections import OrderedDict
 
-FILE_NAME = ".\\Input\\conta.csv"
+FILE_NAME = ".\\Input\\conta-ING.csv"
 HEADERS = ['Date', 'Description', 'Credit', 'Debit', 'Balance']
 DATE_START = datetime.datetime(2020, 1, 2)
-DATE_END = datetime.datetime(2022, 12, 30)
+DATE_END = datetime.datetime(2022, 8, 30)
 DESCRIPTIONS_DEBIT = ["WOOLWORTHS", "AGL", "TRANSPORT", "RENT", "Stake", "AMAZON", "Fitness", "Other"]
 DESCRIPTIONS_CREDIT = ['Salary']
-QUANTITY_OF_TRANSACTIONS = 10000
+QUANTITY_OF_TRANSACTIONS = 100000
 
-# Trully random data, good to test efficiency but display/reports might look silly 
+
 def rand_date(start, end):
     '''Consider start and end a datetime object'''
     diff = end - start
@@ -33,10 +41,10 @@ def rand_date(start, end):
 def rand_ranges(type):
     if type == "WOOLWORTHS":
         return -1 * random.randrange(1,150)
-    
+
     elif type == "Other":
-        return -1 * random.randrange(1,2500)
-    
+        return -1 * random.randrange(1,1500)
+
     elif type == "TRANSPORT":
         return -1 * random.randrange(1,50)
 
@@ -45,23 +53,24 @@ def rand_ranges(type):
 
     elif type == "RENT":
         return -1 * random.randrange(1,700)
-    
+
     elif type == "Fitness":
         return -1 * random.randrange(1,50)
 
     elif type == "Investment":
         return -1 * random.randrange(1,150)
-    
+
     elif type == "Salary":
-        return random.randrange(5000,7000)
-    
+        return random.randrange(5000,10000)
+
     elif type == "Stake":
         return -1* random.randrange(1,250)
-    
+
     elif type == "AGL":
         return -1* random.randrange(1,250)
 
 
+# Trully random data, good to test efficiency but display/reports might look silly 
 def generate_quantity(num):
     lst = []
    
@@ -82,6 +91,39 @@ def generate_quantity(num):
     
     return lst
 
+
+# Data that makes sense, can't add infinity transactions in a small range of date Good to test report 
+def generate_quality(num):
+    lst = []
+    count_credit = 0
+    count_expenses = -1
+    # Add one Salary every day 28/durint time predicted
+    months = ((DATE_END.year - DATE_START.year) * 12) + (DATE_END.month - DATE_START.month)
+    
+    lst_months = OrderedDict(((DATE_START + datetime.timedelta(x)).strftime(r"%m/%Y"), None) for x in range((DATE_END - DATE_START).days)).keys()
+    
+    for item in lst_months:
+        fmt_date = f"25/{item}"
+        des_credit = random.choice(DESCRIPTIONS_CREDIT)
+        value_credit = rand_ranges(des_credit)
+        lst.append([fmt_date, des_credit, rand_ranges(des_credit), 0, 5000])
+        count_credit += value_credit
+    
+
+    #Addd random expenses not pass 90% of income
+    for i in range(num):
+        des_debit = random.choice(DESCRIPTIONS_DEBIT)
+        dt = rand_date(DATE_START, DATE_END)
+        debit = rand_ranges(des_debit)
+        
+        if ((count_expenses + debit)*-1) >= (0.90*count_credit):
+            break
+        
+        lst.append([dt, des_debit, 0, rand_ranges(des_debit), 5000])
+        count_expenses += debit
+        
+    return lst
+
 try:
     os.mkdir("Input")
 except Exception:
@@ -90,4 +132,4 @@ except Exception:
 with open(FILE_NAME, "w", newline='') as file:
     writer = csv.writer(file)
     writer.writerow(HEADERS)
-    writer.writerows(generate_quantity(QUANTITY_OF_TRANSACTIONS))
+    writer.writerows(generate_quality(QUANTITY_OF_TRANSACTIONS))
