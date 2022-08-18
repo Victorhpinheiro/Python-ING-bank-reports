@@ -1,9 +1,23 @@
 import read_files
 import categories
 import sqlite3
+import os
 from main import *
 
 def create_db():
+    PATH = ".\\Input"
+    #Check if files exists
+    files_to_feed_db = []
+    for path, folder, files in os.walk(PATH):
+        for file in files:
+            if "ING" in file or "CBA" in file:
+                files_to_feed_db.append(file[:len(file)-4])
+    
+    if len(files_to_feed_db) < 1:
+        print("""Files not found in the Input folder. 
+            Please put info at: \n .\Input \n 
+            make sure csv files have ING or CBA""")
+
     # Connect to the db
     conn = sqlite3.connect("banking.sqlite")
     cur = conn.cursor()
@@ -51,9 +65,13 @@ def create_db():
     conn.commit()
 
     # I have two everyday account that I will call "Notomorrow" and "General" give the name of your account :)
+    acc_dic = dict(
+        zip(files_to_feed_db, [i + 1 for i in range(len(files_to_feed_db))])
+    )
     
+    files_to_feed_db
     # Populate acc_info
-    for key, value in acc_info_dic.items():
+    for key, value in acc_dic.items():
         cur.execute(
             "INSERT OR IGNORE INTO acc_info (id, acc) VALUES ( ? , ?)", (value, key)
         )
@@ -62,34 +80,38 @@ def create_db():
     # Prepare to read and populate transactions table
     general = read_files.read_csv("General", file_gen)
 
-    for row in general:
-        acc_name = row.get_name()
-        date = read_files.format_date(row.get_date())
-        desciption = row.get_description()
-        credit = row.get_credit()
-        debit = row.get_debit()
-        balance = row.get_balance()
-        category = categories.set_category(desciption)
+    for file in files_to_feed_db:
+        for row in general:
+            acc_name = file
+            date = read_files.format_date(row.get_date())
+            desciption = row.get_description()
+            credit = row.get_credit()
+            debit = row.get_debit()
+            balance = row.get_balance()
+            category = categories.set_category(desciption)
 
-        cur.execute(
-            """INSERT OR IGNORE INTO transactions 
-                (account_id,
-                date,
-                description,
-                credit,
-                debit,
-                balance,
-                category_id)
-            VALUES ( ? , ? , ?, ?, ?, ?, ?)""",
-            (
-                acc_info_dic["General"],
-                date,
-                desciption,
-                credit,
-                debit,
-                balance,
-                categories_dic[category],
-            ),
-        )
+            cur.execute(
+                """INSERT OR IGNORE INTO transactions 
+                    (account_id,
+                    date,
+                    description,
+                    credit,
+                    debit,
+                    balance,
+                    category_id)
+                VALUES ( ? , ? , ?, ?, ?, ?, ?)""",
+                (
+                    acc_dic[acc_name],
+                    date,
+                    desciption,
+                    credit,
+                    debit,
+                    balance,
+                    categories_dic[category],
+                ),
+            )
+
     conn.commit()
     conn.close()
+
+    return files_to_feed_db
