@@ -101,7 +101,7 @@ class Month_by_month:
         self.month = month
         self.year = year
         self.list_values = []  
-        self.title = f"Expenses by Category - {MONTH_MAP[self.month]}" 
+        self.title = f"Expenses by Category - {MONTH_MAP[self.month]} / {self.year}" 
         self.expenses = []
      
     def add_category(self, category):

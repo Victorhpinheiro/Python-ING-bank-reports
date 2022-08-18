@@ -66,8 +66,8 @@ def read_csv(acc_name, file):
                     line["Debit"],
                     line["Balance"],
                 )
-    except:
-        raise Error("Couldn't Open the CSV")
+    except Exception:
+        raise FileExistsError("Couldn't Open the CSV")
 
 def format_date(date):
     # Format date into the ISO8601 in order to add to the db
