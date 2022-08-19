@@ -13,11 +13,11 @@ from collections import OrderedDict
 
 FILE_NAME = ".\\Input\\conta-ING.csv"
 HEADERS = ['Date', 'Description', 'Credit', 'Debit', 'Balance']
-DATE_START = datetime.datetime(2020, 1, 2)
+DATE_START = datetime.datetime(2022, 2, 13)
 DATE_END = datetime.datetime(2022, 8, 30)
 DESCRIPTIONS_DEBIT = ["WOOLWORTHS", "AGL", "TRANSPORT", "RENT", "Stake", "AMAZON", "Fitness", "Other"]
 DESCRIPTIONS_CREDIT = ['Salary']
-QUANTITY_OF_TRANSACTIONS = 100000
+QUANTITY_OF_TRANSACTIONS = 1000
 
 
 def rand_date(start, end):
@@ -43,7 +43,7 @@ def rand_ranges(type):
         return -1 * random.randrange(1,150)
 
     elif type == "Other":
-        return -1 * random.randrange(1,1500)
+        return -1 * random.randrange(1,500)
 
     elif type == "TRANSPORT":
         return -1 * random.randrange(1,50)
@@ -97,8 +97,7 @@ def generate_quality(num):
     lst = []
     count_credit = 0
     count_expenses = -1
-    # Add one Salary every day 28/durint time predicted
-    months = ((DATE_END.year - DATE_START.year) * 12) + (DATE_END.month - DATE_START.month)
+    other_count = 0
     
     lst_months = OrderedDict(((DATE_START + datetime.timedelta(x)).strftime(r"%m/%Y"), None) for x in range((DATE_END - DATE_START).days)).keys()
     
@@ -109,19 +108,24 @@ def generate_quality(num):
         lst.append([fmt_date, des_credit, rand_ranges(des_credit), 0, 5000])
         count_credit += value_credit
     
-
-    #Addd random expenses not pass 90% of income
+    # Addd random expenses not pass 90% of income
     for i in range(num):
-        des_debit = random.choice(DESCRIPTIONS_DEBIT)
+        prob = random.randrange(100)
+        if prob <= 30:
+            des_debit = 'Other'
+        else:
+            des_debit = random.choice(DESCRIPTIONS_DEBIT)
+        
         dt = rand_date(DATE_START, DATE_END)
         debit = rand_ranges(des_debit)
         
         if ((count_expenses + debit)*-1) >= (0.90*count_credit):
             break
         
-        lst.append([dt, des_debit, 0, rand_ranges(des_debit), 5000])
+        lst.append([dt, des_debit + str(other_count), 0, rand_ranges(des_debit), 5000])
         count_expenses += debit
-        
+        other_count += 1
+
     return lst
 
 try:
