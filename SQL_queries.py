@@ -38,10 +38,9 @@ ALL_ACCOUNTS_INCOME_MONTHLY_VAR = """SELECT
 ALL_ACCOUNTS_CAT_EXPENSES_MONTHLY_VAR = """SELECT
                                     strftime('%m', date),
                                     category,
-                                    ROUND(SUM(credit),2) AS credit,
                                     ROUND(SUM(debit),2) AS debit
                                     FROM (SELECT * FROM transactions AS t JOIN categories AS c ON t.category_id = c.id JOIN acc_info AS a ON t.account_id = a.id)
-                                    WHERE category != 'Internal'
+                                    WHERE category != 'Internal' AND debit < 0
                                     GROUP BY 1, 2
                                     HAVING strftime('%Y', date) = ? AND
                                     strftime('%m', date) = ?
@@ -126,10 +125,9 @@ INDIVIDUAL_ACCOUNT_CAT_EXPENSES_MONTHLY_VAR = """SELECT
                                     strftime('%m', date),
                                     category,
                                     acc,
-                                    ROUND(SUM(credit),2) AS credit,
                                     ROUND(SUM(debit),2) AS debit
                                     FROM (SELECT * FROM transactions AS t JOIN categories AS c ON t.category_id = c.id JOIN acc_info AS a ON t.account_id = a.id)
-                                    WHERE category != 'Internal' AND acc =?
+                                    WHERE category != 'Internal' AND acc =? AND debit < 0
                                     GROUP BY 1, 2, 3
                                     HAVING strftime('%Y', date) = ? AND
                                     strftime('%m', date) = ?
