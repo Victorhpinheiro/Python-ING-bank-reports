@@ -52,22 +52,52 @@ def read_csv(acc_name, file):
     """
     Consider the CSV file from the bank ING and return all the information as a list of rows objects
     """
-    try:
-        with open(file, "r") as f:
-            csv_reader = csv.DictReader(f)
-            next(csv_reader)
+    if 'ING' in acc_name:
+        try:
+            with open(file, "r") as f:
+                csv_reader = csv.DictReader(f)
+                next(csv_reader)
 
-            for line in csv_reader:
-                yield Row(
-                    acc_name,
-                    line["Date"],
-                    line["Description"],
-                    line["Credit"],
-                    line["Debit"],
-                    line["Balance"],
-                )
-    except Exception:
-        raise FileExistsError("Couldn't Open the CSV")
+                for line in csv_reader:
+                    yield Row(
+                        acc_name,
+                        line["Date"],
+                        line["Description"],
+                        line["Credit"],
+                        line["Debit"],
+                        line["Balance"],
+                    )
+        except Exception:
+            raise FileExistsError("Couldn't Open the CSV")
+    elif 'CBA' in acc_name:
+        # CBA csv does not have header, the structure is: Date, credit/debit, descripiton balance
+        try:
+            with open(file, "r") as f:
+                csv_reader = csv.reader(f)
+
+                for line in csv_reader:
+                    if float(line[1]) < 0:
+                        yield Row(
+                            acc_name,
+                            line[0],
+                            line[2],
+                            0,
+                            float(line[1]),
+                            line[3],
+                        )
+                    else:
+                        yield Row(
+                            acc_name,
+                            line[0],
+                            line[2],
+                            float(line[1]),
+                            0,
+                            line[3],
+                        )
+        except Exception:
+            raise FileExistsError("Couldn't Open the CSV")
+        
+
 
 def format_date(date):
     # Format date into the ISO8601 in order to add to the db

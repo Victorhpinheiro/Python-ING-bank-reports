@@ -1,5 +1,5 @@
 import read_files
-import categories
+import CONFIG_CATEGORIES as categories
 import sqlite3
 import os
 from main import *
@@ -68,6 +68,7 @@ def create_db():
     acc_dic = dict(
         zip(files_to_feed_db, [i + 1 for i in range(len(files_to_feed_db))])
     )
+    print(acc_dic)
     
     files_to_feed_db
     # Populate acc_info
@@ -77,12 +78,12 @@ def create_db():
         )
     conn.commit()
 
-    # Prepare to read and populate transactions table
-    general = read_files.read_csv("General", file_gen)
+    # Read and populate transactions table
 
-    for file in files_to_feed_db:
+    for acc in files_to_feed_db:
+        file_to_read = PATH + '\\' + acc + ".csv"
+        general = read_files.read_csv(file, file_to_read)
         for row in general:
-            acc_name = file
             date = read_files.format_date(row.get_date())
             desciption = row.get_description()
             credit = row.get_credit()
@@ -101,7 +102,7 @@ def create_db():
                     category_id)
                 VALUES ( ? , ? , ?, ?, ?, ?, ?)""",
                 (
-                    acc_dic[acc_name],
+                    acc_dic[acc],
                     date,
                     desciption,
                     credit,

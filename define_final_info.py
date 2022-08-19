@@ -206,7 +206,7 @@ class Category_year_pie:
 
         wedges, texts, autotexts = ax.pie(self.list_values, colors=colors, autopct=lambda pct: func(pct, self.list_values), textprops=dict(color="black"))
         ax.legend(wedges, self.categories,
-                        title="Categproes",
+                        title="Categories",
                         loc="center left",
                         bbox_to_anchor=(1, 0, 0.5, 1))
         
