@@ -1,8 +1,7 @@
 '''
 Created by Victor Pinheiro
-All rights reserved
 Solo file that will create a mock csv export from the bank ING Australia
-there is a function to test efficiency and one for quality
+There is a function to test efficiency and one for more realistic data
 '''
 
 import csv
@@ -10,14 +9,15 @@ import random
 import datetime
 import os
 from collections import OrderedDict
+import CONFIG as cfg
 
 FILE_NAME = ".\\Input\\conta-ING.csv"
 HEADERS = ['Date', 'Description', 'Credit', 'Debit', 'Balance']
-DATE_START = datetime.datetime(2022, 2, 13)
+DATE_START = datetime.datetime(2021, 1, 13)
 DATE_END = datetime.datetime(2022, 8, 30)
 DESCRIPTIONS_DEBIT = ["WOOLWORTHS", "AGL", "TRANSPORT", "RENT", "Stake", "AMAZON", "Fitness", "Other"]
 DESCRIPTIONS_CREDIT = ['Salary']
-QUANTITY_OF_TRANSACTIONS = 1000
+
 
 
 def rand_date(start, end):
@@ -52,7 +52,7 @@ def rand_ranges(type):
         return -1 * random.randrange(1,50)
 
     elif type == "RENT":
-        return -1 * random.randrange(1,700)
+        return -1 * random.randrange(1,1500)
 
     elif type == "Fitness":
         return -1 * random.randrange(1,50)
@@ -111,7 +111,7 @@ def generate_quality(num):
     # Addd random expenses not pass 90% of income
     for i in range(num):
         prob = random.randrange(100)
-        if prob <= 30:
+        if prob <= 20:
             des_debit = 'Other'
         else:
             des_debit = random.choice(DESCRIPTIONS_DEBIT)
@@ -128,12 +128,14 @@ def generate_quality(num):
 
     return lst
 
-try:
-    os.mkdir("Input")
-except Exception:
-    pass
 
-with open(FILE_NAME, "w", newline='') as file:
-    writer = csv.writer(file)
-    writer.writerow(HEADERS)
-    writer.writerows(generate_quality(QUANTITY_OF_TRANSACTIONS))
+def create_test_csv(path, file_name, func, quantity):
+    try:
+        os.mkdir("Input")
+    except Exception:
+        pass
+
+    with open(path + '\\' + file_name, "w", newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(HEADERS)
+        writer.writerows(func(quantity))

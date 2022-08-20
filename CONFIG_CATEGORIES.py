@@ -1,6 +1,6 @@
 import re
-
-# define here your list of categories, regex to check and modify the function
+'''Define your list of categories, the REGEX lookup that will match
+and the Function to allign with your criteira of category.'''
 
 categories = [
     "Income",
@@ -24,7 +24,7 @@ shopping = "(Daiso)|(store)|(AMAZON)|(BIG W)|(MARKETPLACE)|(KMART)|(JB HI-FI)|(E
 house = "(VODAFONE)|(AGL)|(CIRCLES)"  # house is internet/ eletricity and phones
 rent = "(DEFT RENT)|(RENT)"
 investment = "(Spaceship)|(binance)|(Stake)"
-subs = "(LINODE)|(Patreon)|(AMZNPRIMEAU)"
+subs = "(LINODE)|(Patreon)|(AMZNPRIMEAU)|(NETFLIX)"
 internal = "(Internal)|(round up)"
 fitness = "(Clublinks)|(Fitness)"
 

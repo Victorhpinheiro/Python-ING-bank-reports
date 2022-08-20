@@ -36,7 +36,7 @@ ALL_ACCOUNTS_INCOME_MONTHLY_VAR = """SELECT
 # Calulate Expenses by category by month + top 5 expenses of the month - ALL ACC
 ####################################################################################################################
 ALL_ACCOUNTS_CAT_EXPENSES_MONTHLY_VAR = """SELECT
-                                    strftime('%m', date),
+                                    strftime('%Y/%m', date),
                                     category,
                                     ROUND(SUM(debit),2) AS debit
                                     FROM (SELECT * FROM transactions AS t JOIN categories AS c ON t.category_id = c.id JOIN acc_info AS a ON t.account_id = a.id)
@@ -48,7 +48,7 @@ ALL_ACCOUNTS_CAT_EXPENSES_MONTHLY_VAR = """SELECT
 
 ALL_ACCOUNTS_HIGH_OTHER_EXPESES_MONTHLY = """SELECT
                                     date,
-                                    strftime('%m', date),
+                                    strftime('%Y/%m', date),
                                     description,
                                     category,
                                     debit,
@@ -85,7 +85,7 @@ MOST_EXPENSIVE_OTHERS_YEAR = """SELECT
                                     FROM (SELECT * FROM transactions AS t JOIN categories AS c ON t.category_id = c.id JOIN acc_info AS a ON t.account_id = a.id)
                                     WHERE category = 'Other' AND debit < 0
                                     GROUP BY 2,3
-                                    HAVING strftime('%Y', date) = ? 
+                                    HAVING strftime('%Y', date) = ?
                                     ORDER BY debit ASC
                                     LIMIT 10
                                     """
@@ -122,7 +122,7 @@ INDIVIDUAL_ACCOUNT_INCOME_MONTHLY_VAR = """SELECT
 # Calulate Expenses by category by month + top 5 expenses of the month - INDIVIDUAL ACC
 ####################################################################################################################
 INDIVIDUAL_ACCOUNT_CAT_EXPENSES_MONTHLY_VAR = """SELECT
-                                    strftime('%m', date),
+                                    strftime('%Y%m', date),
                                     category,
                                     acc,
                                     ROUND(SUM(debit),2) AS debit
@@ -135,7 +135,7 @@ INDIVIDUAL_ACCOUNT_CAT_EXPENSES_MONTHLY_VAR = """SELECT
 
 INDIVIDUAL_ACCOUNT_HIGH_OTHER_EXPESES_MONTHLY = """SELECT
                                     date,
-                                    strftime('%m', date),
+                                    strftime('%Y%m', date),
                                     description,
                                     acc,
                                     category,
@@ -182,5 +182,3 @@ INDIVIDUAL_MOST_EXPENSIVE_OTHERS_YEAR = """SELECT
                                     ORDER BY debit ASC
                                     LIMIT 10
                                     """
-
-# https://docs.python.org/3/library/sqlite3.html#sqlite3.Connection.row_factory

@@ -1,28 +1,21 @@
 import matplotlib.pyplot as plt
-import matplotlib
 import numpy as np
+import CONFIG as cfg
 
-FIG_WIDTH = 21
-FIG_HEIGHT = 13
 
-MONTH_MAP = {
-            '01': 'January', '02': 'February', '03': 'March',
-            '04': 'April', '05': 'May', '06': 'June',
-            '07': 'July', '08': 'August', '09': 'September',
-            '10': 'October', '11': 'November', '12': 'December'
-            }
 def func(pct, allvals):
     '''Format the auto % of the pie chart'''
     absolute = int(np.round(pct/100.*np.sum(allvals)))
     return "{:.1f}%\n(${:,.2f} )".format(pct, absolute)
 
+
 class All_years_total:
-    """receive total value of all years of credit and debit without considering Internal transfers in asc order"""
+    """Create an object that can plot the difference of credit and debit in a list of years."""
 
     def __init__(self, list_all_years) -> None:
         self.list_all_years = list_all_years  # [2020, ,2021, 2022]
-        self.list_values_credit = []  # have to be same len of all years
-        self.list_values_debit = []  # have to be sabe len of all years
+        self.list_values_credit = [] 
+        self.list_values_debit = [] 
         self.title = ""
 
     def add_credit(self, credit):
@@ -45,15 +38,15 @@ class All_years_total:
             return
     
         fig, ax = plt.subplots()  # Instance of Bar chart
-        fig.set(figwidth=FIG_WIDTH, figheight=FIG_HEIGHT)
+        fig.set(figwidth=cfg.FIG_WIDTH, figheight=cfg.FIG_HEIGHT)
         plt.style.use('seaborn')  # Define style
         # Prepare X array and the width of the bars
         x_index = np.arange(length)
         width = 0.3
     
         # Add the bar that will be plotted in a variable
-        rec_credit = ax.bar(x_index - (width/2), self.list_values_credit, width=width, color='#6bbf59', label='Credit')
-        rec_debit = ax.bar(x_index + (width/2), self.list_values_debit, width=width, color='#fa7e61', label='Debit')
+        rec_credit = ax.bar(x_index - (width/2), self.list_values_credit, width=width, color=cfg.COLOR_BAR_CREDIT, label='Credit')
+        rec_debit = ax.bar(x_index + (width/2), self.list_values_debit, width=width, color=cfg.COLOR_BAR_DEBIT, label='Debit')
 
         ax.legend()  # Add color legend
         ax.set_title(self.title, fontsize=20)
@@ -67,7 +60,7 @@ class All_years_total:
         ax.bar_label(rec_debit, labels=[f'${x:,.2f}' for x in self.list_values_debit], fontsize='large')
         ax.grid(True, alpha=0.1)
 
-        #Add text with difference info
+        # Add text with difference info
         diff = self.diff_by_year()
         tittle = "Difference by year:     \n\n\n"
         line = []
@@ -79,7 +72,6 @@ class All_years_total:
         fig.text(0.65, 0.8, final_text, ha='left', va='center', size=20, color='black')
         fig.subplots_adjust(right=0.62)
 
-        # fig.savefig("foo.pdf", bbox_inches='tight')
         # plt.show()
         return fig
 
@@ -96,14 +88,16 @@ class All_years_total:
         
 
 class Month_by_month:
+    """Create an object that can plot Monthly expenses by category and 5 top expenses in the other category"""
+
     def __init__(self, year, month) -> None:
         self.categories = []
         self.month = month
         self.year = year
-        self.list_values = []  
-        self.title = f"Expenses by Category - {MONTH_MAP[self.month]} / {self.year}" 
+        self.list_values = []
+        self.title = f"Expenses by Category - {cfg.MONTH_MAP[self.month]} / {self.year}"
         self.expenses = []
-     
+
     def add_category(self, category):
         self.categories.append(category)
 
@@ -115,7 +109,7 @@ class Month_by_month:
 
     def add_expense(self, date, expense, description):
         if len(self.expenses) < 1:
-            self.expenses.append(f"TOP 5 OTHER EXPENSES MONTH - {MONTH_MAP[self.month]}/{self.year}\n\n\n")
+            self.expenses.append(f"TOP 5 OTHER EXPENSES MONTH - {cfg.MONTH_MAP[self.month]}/{self.year}\n\n\n")
 
         self.expenses.append(f"{date}: ${expense:,.2f} - {description[:20]}\n\n")
 
@@ -130,7 +124,7 @@ class Month_by_month:
             return
     
         fig, ax = plt.subplots()  # Instance of Bar chart
-        fig.set(figwidth=FIG_WIDTH, figheight=FIG_HEIGHT)
+        fig.set(figwidth=cfg.FIG_WIDTH, figheight=cfg.FIG_HEIGHT)
         plt.style.use('seaborn')  # Define style
 
         # Prepare X array and the width of the bars
@@ -196,12 +190,10 @@ class Category_year_pie:
             print("Values and Categories are not the same length")
             return
 
-        color = ['#ff9999', '#edff86', '#66b3ff', '#fa7e61', '#ffcc99', "#bc5f04", '#f4442e',
-                '#48acf0','#93a3bc', '#41ead4', '#e6ccbe', '#edff86', '#f3c969', '#ecd444', '#8cad7e']
-        colors = color[:length]
+        colors = cfg.COLOR_PIE[:length]
 
         fig, ax = plt.subplots()
-        fig.set(figwidth=FIG_WIDTH, figheight=FIG_HEIGHT)
+        fig.set(figwidth=cfg.FIG_WIDTH, figheight=cfg.FIG_HEIGHT)
         # plt.style.use('seaborn')  # Define style
 
         wedges, texts, autotexts = ax.pie(self.list_values, colors=colors, autopct=lambda pct: func(pct, self.list_values), textprops=dict(color="black"))
@@ -221,7 +213,7 @@ class Category_year_pie:
 
         fig.tight_layout()
         fig.text(0.65, 0.5, final_text, ha='left', va='center', size=20, color='#010001')
-        fig.subplots_adjust(right=0.58)
+        fig.subplots_adjust(right=0.55)
 
         # # fig.savefig("foo.pdf", bbox_inches='tight')
         # plt.show()
@@ -254,15 +246,15 @@ class Year_total_income:
             return
     
         fig, ax = plt.subplots()  # Instance of Bar chart
-        fig.set(figwidth=FIG_WIDTH, figheight=FIG_HEIGHT)
+        fig.set(figwidth=cfg.FIG_WIDTH, figheight=cfg.FIG_HEIGHT)
         plt.style.use('seaborn')  # Define style
         # Prepare X array and the width of the bars
         x_index = np.arange(length)
         width = 0.8
     
         # Add the bar that will be plotted in a variable
-        rec_credit = ax.bar(x_index, self.values_credit, width=width, color='#6bbf59', label='Income')
-        labels = [MONTH_MAP[i] for i in self.month]
+        rec_credit = ax.bar(x_index, self.values_credit, width=width, color=cfg.COLOR_BAR_CREDIT, label='Income')
+        labels = [cfg.MONTH_MAP[i] for i in self.month]
 
         ax.legend()  # Add color legend
         ax.set_title(self.title, fontsize=20)

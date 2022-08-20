@@ -1,5 +1,4 @@
 import csv
-from msilib.schema import Error
 
 
 class Row:
@@ -52,6 +51,7 @@ def read_csv(acc_name, file):
     """
     Consider the CSV file from the bank ING and return all the information as a list of rows objects
     """
+    # TODO default ING
     if 'ING' in acc_name:
         try:
             with open(file, "r") as f:
@@ -95,12 +95,12 @@ def read_csv(acc_name, file):
                             line[3],
                         )
         except Exception:
-            raise FileExistsError("Couldn't Open the CSV")
+            raise FileExistsError("Couldn't Open the CSV or no ING or CBA in the name")
         
 
 
 def format_date(date):
-    # Format date into the ISO8601 in order to add to the db
+    # Format date into the ISO8601 in order to add to the db yyyy-mm-dd
     # Consider the input date in the format dd/mm/yyyy
     new_date = date.split("/")
     new_date.reverse()
