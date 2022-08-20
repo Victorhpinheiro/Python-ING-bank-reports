@@ -69,6 +69,17 @@ Montlhy expenses + top 5 other category by month
 
 P.S: the Other expenses are random everyday things like a concert or sending to a friend some money, some random store that doesn't match the categories configuration
 
+# How it works
+
+The program have the following flow:
+
+![flow](imgs/flow_chart.png)
+
+It works by reading and formating the information in a way that will be useful in the db.
+Then it procede to do a series of queries and add the information in a list.
+The information is than saved in a pdf for all the accounts CSV present in the thing.
+
+
 ## Note
 
 If you have any sugestion/question please let me know so I can improve the quality of reports and insights.
