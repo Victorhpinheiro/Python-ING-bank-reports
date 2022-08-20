@@ -7,7 +7,8 @@ This generate a report of big picture about transactions, monthly income and whe
 Check screenshots in the end to see how the report looks like!
 
 # Requirements
-Python 3.7 or more
+Python 3.7 or Above
+
 matplotlib 1.16.0
 
 # How to use it:
