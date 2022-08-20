@@ -9,7 +9,7 @@ import random
 import datetime
 import os
 from collections import OrderedDict
-import CONFIG as cfg
+
 
 FILE_NAME = ".\\Input\\conta-ING.csv"
 HEADERS = ['Date', 'Description', 'Credit', 'Debit', 'Balance']
