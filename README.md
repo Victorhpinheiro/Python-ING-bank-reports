@@ -9,7 +9,8 @@ Check screenshots in the end to see how the report looks like!
 # Requirements
 Python 3.7 or Above
 
-matplotlib 1.16.0
+matplotlib 3.5.3
+
 
 # How to use it:
 
