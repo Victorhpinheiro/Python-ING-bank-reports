@@ -98,8 +98,14 @@ def generate_quality(num):
     count_credit = 0
     count_expenses = -1
     other_count = 0
+    # Fix to run lst_months faster https://stackoverflow.com/questions/34898525/generate-list-of-months-between-interval-in-python
+    # lst_months = OrderedDict(((DATE_START + datetime.timedelta(x)).strftime(r"%m/%Y"), None) for x in range((DATE_END - DATE_START).days)).keys()
+    total_months = lambda dt: dt.month + 12 * dt.year
+    lst_months = []
+    for tot_m in range(total_months(DATE_START)-1, total_months(DATE_END)):
+        y, m = divmod(tot_m, 12)
+        lst_months.append(datetime.datetime(y, m+1, 1).strftime("%m/%Y"))
     
-    lst_months = OrderedDict(((DATE_START + datetime.timedelta(x)).strftime(r"%m/%Y"), None) for x in range((DATE_END - DATE_START).days)).keys()
     
     for item in lst_months:
         fmt_date = f"25/{item}"

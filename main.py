@@ -1,7 +1,7 @@
 """ 
 Created by Victor Pinheiro 
 all rights reserved
-Version 2.0
+Version 2.1
 """
 
 import os

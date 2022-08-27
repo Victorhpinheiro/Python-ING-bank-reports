@@ -3,7 +3,7 @@ import datetime
 ############################# MAIN #################################################
 # Path were it read the csv files and where test csv are created
 PATH = ".\\Input"
-# Year of the reports as string - current - str(datetime.datetime.today().year)
+# Year of the reports as string - current-str(datetime.datetime.today().year)
 YEAR_CUR = str(datetime.datetime.today().year)
 
 ############################# TEST #################################################

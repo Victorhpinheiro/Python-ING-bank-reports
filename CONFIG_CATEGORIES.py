@@ -15,7 +15,7 @@ categories = [
     "fitness",
     "Other",
 ]
-# Mapping regex with the description with interest categories.
+# Mapping regex with the description with interest categories
 # CONFIGURATION - REGEX
 income = "(Salary)|(Dividend)"  # Salary
 grocery = "(WOOLWORTHS)|(COLES)|(ALDI)|(Cosmos)|(7-ELEVEN)|(FISHME)"
