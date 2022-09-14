@@ -17,13 +17,13 @@ categories = [
 ]
 # Mapping regex with the description with interest categories
 # CONFIGURATION - REGEX
-income = "(Salary)|(Dividend)"  # Salary
+income = "(Salary)|(Dividend)|(ATO)"  # Salary and tax refund
 grocery = "(WOOLWORTHS)|(COLES)|(ALDI)|(Cosmos)|(7-ELEVEN)|(FISHME)"
 transport = "(OPAL)|(UBER)|(CARSHAREAUS)|(TRANSPORT)"
 shopping = "(Daiso)|(store)|(AMAZON)|(BIG W)|(MARKETPLACE)|(KMART)|(JB HI-FI)|(EB GAMES)|(TARGET)|(OFFICEWORKS)|(TYPO)"
 house = "(VODAFONE)|(AGL)|(CIRCLES)"  # house is internet/ eletricity and phones
 rent = "(DEFT RENT)|(RENT)"
-investment = "(Spaceship)|(binance)|(Stake)"
+investment = "(Spaceship)|(binance)|(stake)|(Stake)"
 subs = "(LINODE)|(Patreon)|(AMZNPRIMEAU)|(NETFLIX)"
 internal = "(Internal)|(round up)"
 fitness = "(Clublinks)|(Fitness)"
