@@ -21,7 +21,11 @@ You can use with mock data to play with the script and see results or with your 
 - Select the amount of accounts you want to simulate at 'AMOUNT_TEST'
 - Run the main :)
 - Check for erros in the console or the final report on the "Reports" folder
-![change_config](imgs/config_test_true.PNG)
+For example, create automatically mockup data and run reports for 2 accounts:
+```py
+IS_TEST = True
+AMOUNT_TEST = 2
+```
 
 ## Real Data
 - On the "CONFIG.py" change "IS_TEST" to False.
