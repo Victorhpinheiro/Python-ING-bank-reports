@@ -31,7 +31,7 @@ if __name__ == '__main__':
     if cfg.IS_TEST:
         try:
             for i in range(cfg.AMOUNT_TEST):
-                file_of_test = 'Acc_name_test' + str(i) + '.csv'
+                file_of_test = 'Acc_name_test_ING-' + str(i) + '.csv'
                 tst_csv.create_test_csv(cfg.PATH, file_of_test, tst_csv.generate_quality, 10000)
         except Exception:
             raise ValueError("AMOUNT OF TESTS HAVE TO BE AND INTEGER")

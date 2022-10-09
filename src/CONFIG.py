@@ -1,15 +1,13 @@
 import datetime
 
 ############################# MAIN #################################################
-# Path were it read the csv files and where test csv are created
-PATH = ".\\Input"
-# Year of the reports as string - current-str(datetime.datetime.today().year)
-YEAR_CUR = str(datetime.datetime.today().year)
+PATH = ".\\Input" # Path where are the inputs
+YEAR_CUR = str(datetime.datetime.today().year) # Year of the reports as string
 
 ############################# TEST #################################################
 # Will generate a mock csv file when running. Turn to 'False' to use in real data an put files in input
-IS_TEST = False
-AMOUNT_TEST = 1
+IS_TEST = True
+AMOUNT_TEST = 2
 
 
 ############################# CHARTS #################################################
