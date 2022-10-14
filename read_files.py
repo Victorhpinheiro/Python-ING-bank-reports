@@ -100,8 +100,8 @@ def read_csv(acc_name, file):
 
 
 def format_date(date):
-    # Format date into the ISO8601 in order to add to the db yyyy-mm-dd
-    # Consider the input date in the format dd/mm/yyyy
+    """Format date into the ISO8601 in order to add to the db yyyy-mm-dd
+    Consider the input date in the format dd/mm/yyyy"""
     new_date = date.split("/")
     new_date.reverse()
     new_date = "-".join(new_date)
