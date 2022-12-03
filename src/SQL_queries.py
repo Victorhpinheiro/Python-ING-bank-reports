@@ -51,8 +51,7 @@ ALL_ACCOUNTS_HIGH_OTHER_EXPESES_MONTHLY = """SELECT
                                     strftime('%Y/%m', date),
                                     description,
                                     category,
-                                    debit,
-                                    description
+                                    debit
                                     FROM (SELECT * FROM transactions AS t JOIN categories AS c ON t.category_id = c.id JOIN acc_info AS a ON t.account_id = a.id)
                                     WHERE category = 'Other' AND debit < 0
                                     GROUP BY 2,3
@@ -63,7 +62,29 @@ ALL_ACCOUNTS_HIGH_OTHER_EXPESES_MONTHLY = """SELECT
                                     """
 
 ####################################################################################################################
-# Calulate Expenses by category by yes + top 10 expenses of the year - ALL ACC
+# Calulate Expenses by category for last week + top 10 expenses of the week - ALL ACC
+####################################################################################################################
+ALL_ACCOUNTS_CAT_EXPENSES_LAST_WEEK = """SELECT
+                                    category,
+                                    ROUND(SUM(debit),2) AS debit
+                                    FROM (SELECT * FROM transactions AS t JOIN categories AS c ON t.category_id = c.id JOIN acc_info AS a ON t.account_id = a.id)
+                                    WHERE category != 'Internal' AND debit < 0 AND date BETWEEN ? AND ?
+                                    GROUP BY 1
+                                    """
+
+ALL_ACCOUNTS_HIGH_OTHER_EXPESES_LAST_WEEK = """SELECT
+                                    date,
+                                    description,
+                                    category,
+                                    debit
+                                    FROM (SELECT * FROM transactions AS t JOIN categories AS c ON t.category_id = c.id JOIN acc_info AS a ON t.account_id = a.id)
+                                    WHERE category = 'Other' AND debit < 0 AND date BETWEEN ? AND ?
+                                    ORDER BY debit ASC
+                                    LIMIT 10
+                                    """
+
+####################################################################################################################
+# Calulate Expenses by category by year + top 10 expenses of the year - ALL ACC
 ####################################################################################################################
 ALL_ACCOUNTS_CAT_YEAR_VAR = """SELECT
                                     strftime('%Y', date),
@@ -149,6 +170,30 @@ INDIVIDUAL_ACCOUNT_HIGH_OTHER_EXPESES_MONTHLY = """SELECT
                                     strftime('%m', date) = ?
                                     ORDER BY debit ASC
                                     LIMIT 5
+                                    """
+
+####################################################################################################################
+# Calulate Expenses by category for last week + top 10 expenses of the week - INDIVIDUAL ACC
+####################################################################################################################
+INDIVIDUAL_ACCOUNTS_CAT_EXPENSES_LAST_WEEK = """SELECT
+                                    acc,
+                                    category,
+                                    ROUND(SUM(debit),2) AS debit
+                                    FROM (SELECT * FROM transactions AS t JOIN categories AS c ON t.category_id = c.id JOIN acc_info AS a ON t.account_id = a.id)
+                                    WHERE category != 'Internal' AND debit < 0 AND date BETWEEN ? AND ? AND acc = ?
+                                    GROUP BY 2
+                                    """
+
+INDIVIDUAL_HIGH_OTHER_EXPESES_LAST_WEEK = """SELECT
+                                    date,
+                                    description,
+                                    category,
+                                    acc,
+                                    debit
+                                    FROM (SELECT * FROM transactions AS t JOIN categories AS c ON t.category_id = c.id JOIN acc_info AS a ON t.account_id = a.id)
+                                    WHERE category = 'Other' AND debit < 0 AND date BETWEEN ? AND ? AND acc = ?
+                                    ORDER BY debit ASC
+                                    LIMIT 10
                                     """
 
 ####################################################################################################################

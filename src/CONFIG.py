@@ -1,12 +1,12 @@
 import datetime
 
 ############################# MAIN #################################################
-PATH = ".\\Input" # Path where are the inputs
-YEAR_CUR = str(datetime.datetime.today().year) # Year of the reports as string
+PATH = ".\\Input"  # Path where are the inputs
+YEAR_CUR = str(datetime.datetime.today().year)  # Year of the reports as string
 
 ############################# TEST #################################################
 # Will generate a mock csv file when running. Turn to 'False' to use in real data an put files in input
-IS_TEST = True
+IS_TEST = False
 AMOUNT_TEST = 2
 
 
@@ -15,6 +15,7 @@ FIG_WIDTH = 21
 FIG_HEIGHT = 13
 COLOR_BAR_CREDIT = '#6bbf59'
 COLOR_BAR_DEBIT = '#fa7e61'
+COLOR_BAR_DEBIT_WEEKLY = '#92140c'
 # if you are having more than 15 categories, please add more colors
 COLOR_PIE = ['#ff9999', '#edff86', '#66b3ff', '#fa7e61', '#ffcc99', "#bc5f04", '#f4442e',
             '#48acf0','#93a3bc', '#41ead4', '#e6ccbe', '#edff86', '#f3c969', '#ecd444', '#8cad7e']
@@ -28,3 +29,8 @@ MONTH_MAP = {
             '07': 'July', '08': 'August', '09': 'September',
             '10': 'October', '11': 'November', '12': 'December'
             }
+
+WEEK_REFERENCE = {
+                "start": datetime.datetime.today().date() - datetime.timedelta(7), 
+                "end" : datetime.datetime.today().date()
+                }

@@ -2,13 +2,19 @@ import matplotlib.pyplot as plt
 import numpy as np
 import CONFIG as cfg
 
+import datetime
+
 
 def func(pct, allvals):
     '''Format the auto % of the pie chart'''
     absolute = int(np.round(pct/100.*np.sum(allvals)))
     return "{:.1f}%\n(${:,.2f} )".format(pct, absolute)
 
-
+def format_week(first_day, last_day):
+    """Consider last_day a datetime object and return a string format for the week"""
+    return f"{first_day} to {last_day}"
+   
+   
 class All_years_total:
     """Create an object that can plot the difference of credit and debit in a list of years."""
 
@@ -131,7 +137,7 @@ class Month_by_month:
         width = 0.35
     
         # Add the bar that will be plotted in a variable color='#fa7e61'
-        rec = ax.bar(self.categories, self.list_values, width=width, color='#fa7e61')
+        rec = ax.bar(self.categories, self.list_values, width=width, color=cfg.COLOR_BAR_DEBIT)
 
         # ax.legend()  # Add color legend
         ax.set_title(self.title, fontsize=20)
@@ -269,4 +275,75 @@ class Year_total_income:
 
         # plt.show()
         return fig
-        
+
+
+class Last_week:
+
+    """Create an object that can plot the last week expenses
+     by category and 5 top expenses in the other category - also will indicate"""
+
+    def __init__(self, year) -> None:
+        self.categories = []
+        self.week = format_week(cfg.WEEK_REFERENCE["start"], cfg.WEEK_REFERENCE["end"])
+        self.year = year
+        self.list_values = []
+        self.title = f"{self.year} - Expenses by Category - {self.week}"
+        self.expenses = []
+
+    def add_category(self, category):
+        self.categories.append(category)
+
+    def add_value(self, value):
+        if value < 0:
+            value = value * (-1)
+
+        self.list_values.append(value)
+
+    def add_expense(self, date, expense, description):
+        if len(self.expenses) < 1:
+            self.expenses.append(f"TOP 10 OTHER EXPENSES WEEK - {self.week}/{self.year}\n\n\n")
+
+        self.expenses.append(f"{date}: ${expense:,.2f} - {description[:20]}\n\n")
+
+    def set_title(self, title):
+        self.title = title
+
+    def plot_info(self):
+        # Check if everything is same size
+        length = len(self.categories)
+        if not length == len(self.list_values):
+            print("Values and Categories are not the same length")
+            return
+    
+        fig, ax = plt.subplots()  # Instance of Bar chart
+        fig.set(figwidth=cfg.FIG_WIDTH, figheight=cfg.FIG_HEIGHT)
+        plt.style.use('seaborn')  # Define style
+
+        # Prepare X array and the width of the bars
+        width = 0.35
+    
+        # Add the bar that will be plotted in a variable color='#fa7e61'
+        rec = ax.bar(self.categories, self.list_values, width=width, color=cfg.COLOR_BAR_DEBIT_WEEKLY)
+
+        # ax.legend()  # Add color legend
+        ax.set_title(self.title, fontsize=20)
+        ax.set_ylabel("Value $", fontsize='large')
+        ax.set_xlabel("Categories", fontsize='large')
+        ax.yaxis.set_major_formatter('${x:,.2f}')
+
+        # Add value on the bad and format nicely
+        ax.bar_label(rec, labels=[f'${x:,.2f}' for x in self.list_values], fontsize='large')
+        ax.grid(True, alpha=0.4)
+
+        if len(self.expenses) >= 1:
+            final_text = "".join(self.expenses)
+        else:
+            final_text = None
+
+        fig.tight_layout()
+        fig.text(0.65, 0.7, final_text, ha='left', va='center', size=20, color='#010001')
+        fig.subplots_adjust(right=0.62)
+
+        # fig.savefig("foo.pdf", bbox_inches='tight')
+        # plt.show()
+        return fig

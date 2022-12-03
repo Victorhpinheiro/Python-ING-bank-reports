@@ -12,12 +12,13 @@ categories = [
     "Investment",
     "Subscription",
     "Internal",
-    "fitness",
+    "Health",
+    "Restaurant",
     "Other",
 ]
 # Mapping regex with the description with interest categories
 # CONFIGURATION - REGEX
-income = "(Salary)|(Dividend)|(ATO)"  # Salary and tax refund
+income = "(Salary)|(Dividend)|( ATO)|(Rebate)"  # Salary and tax refund
 grocery = "(WOOLWORTHS)|(COLES)|(ALDI)|(Cosmos)|(7-ELEVEN)|(FISHME)"
 transport = "(OPAL)|(UBER)|(CARSHAREAUS)|(TRANSPORT)"
 shopping = "(Daiso)|(store)|(AMAZON)|(BIG W)|(MARKETPLACE)|(KMART)|(JB HI-FI)|(EB GAMES)|(TARGET)|(OFFICEWORKS)|(TYPO)"
@@ -26,7 +27,8 @@ rent = "(DEFT RENT)|(RENT)"
 investment = "(Spaceship)|(binance)|(stake)|(Stake)"
 subs = "(LINODE)|(Patreon)|(AMZNPRIMEAU)|(NETFLIX)"
 internal = "(Internal)|(round up)"
-fitness = "(Clublinks)|(Fitness)"
+health = "(Clublinks)|(Fitness)|(BUPA)"
+restaurant = "(FLOR & VINE)|(NOBU)|(Dominos)"
 
 
 def set_category(description):
@@ -52,7 +54,9 @@ def set_category(description):
         return "Subscription"
     elif re.search(internal, description):
         return "Internal"
-    elif re.search(fitness, description):
-        return "fitness"
+    elif re.search(health, description):
+        return "Health"
+    elif re.search(restaurant, description):
+        return "Restaurant"
     else:
         return "Other"

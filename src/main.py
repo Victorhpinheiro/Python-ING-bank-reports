@@ -126,6 +126,23 @@ if __name__ == '__main__':
         print(f"ALL ACCOUNTS - Expenses for the month {month}-{cfg.YEAR_CUR} done")
 
     #############################################################################################
+    # Weekly Expenses by category on a specific week - ALL ACCOUNTS
+    #############################################################################################
+    week_plot = info.Last_week(cfg.YEAR_CUR)
+    cat_weeks = cur.execute(qr.ALL_ACCOUNTS_CAT_EXPENSES_LAST_WEEK, (cfg.WEEK_REFERENCE["start"], cfg.WEEK_REFERENCE["end"]))
+    for row in cat_weeks:
+        if row["category"] == 'Salary':
+            continue
+        week_plot.add_category(row["category"])
+        week_plot.add_value(row["debit"])
+
+    top_10_exp_week = cur.execute(qr.ALL_ACCOUNTS_HIGH_OTHER_EXPESES_LAST_WEEK, (cfg.WEEK_REFERENCE["start"], cfg.WEEK_REFERENCE["end"]))
+    for row in top_10_exp_week:
+        week_plot.add_expense(row['date'], row['debit'], row['description'])
+    report_figs.append(week_plot.plot_info())
+    print(f"ALL ACCOUNTS - Expenses for the week {cfg.WEEK_REFERENCE['start']}-{cfg.WEEK_REFERENCE['end']} done")
+
+    #############################################################################################
     # Print Report ALL ACCS TOGETHER
     #############################################################################################
     try:
@@ -217,9 +234,26 @@ if __name__ == '__main__':
                 mont.add_expense(row['date'], row['debit'], row['description'])
             report_figs.append(mont.plot_info())
             print(f"{acc} - Expenses for the month {month}-{cfg.YEAR_CUR} done")
+        #############################################################################################
+        # Weekly Expenses by category on a specific week - ALL ACCOUNTS
+        #############################################################################################
+        week_plot = info.Last_week(cfg.YEAR_CUR)
+        cat_weeks = cur.execute(qr.INDIVIDUAL_ACCOUNTS_CAT_EXPENSES_LAST_WEEK, (cfg.WEEK_REFERENCE["start"], cfg.WEEK_REFERENCE["end"], acc))
+        for row in cat_weeks:
+            if row["category"] == 'Salary':
+                continue
+            week_plot.add_category(row["category"])
+            week_plot.add_value(row["debit"])
 
-            with PdfPages(f".\\Reports\\Report {acc}-{cfg.YEAR_CUR}.pdf") as report1:
-                for item in report_figs:
-                    report1.savefig(item)
-                    plt.close(item)
+        top_10_exp_week = cur.execute(qr.INDIVIDUAL_HIGH_OTHER_EXPESES_LAST_WEEK, (cfg.WEEK_REFERENCE["start"], cfg.WEEK_REFERENCE["end"], acc))
+        for row in top_10_exp_week:
+            week_plot.add_expense(row['date'], row['debit'], row['description'])
+        report_figs.append(week_plot.plot_info())
+        print(f"{acc} - Expenses for the week {cfg.WEEK_REFERENCE['start']}-{cfg.WEEK_REFERENCE['end']} done")
+
+
+        with PdfPages(f".\\Reports\\Report {acc}-{cfg.YEAR_CUR}.pdf") as report1:
+            for item in report_figs:
+                report1.savefig(item)
+                plt.close(item)
     print("Finished all Reports, Go Check on the folder 'Reports':)")
