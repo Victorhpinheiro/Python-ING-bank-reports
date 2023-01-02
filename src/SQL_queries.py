@@ -3,21 +3,22 @@
 # Full table -> (SELECT * FROM transactions AS t JOIN categories AS c ON t.category_id = c.id JOIN acc_info AS a ON t.account_id = a.id)
 # https://docs.python.org/3/library/sqlite3.html#sqlite3.Connection.row_factory
 
-CHECK_YEAR = "SELECT DISTINCT strftime('%Y', date) as year FROM transactions"
+CHECK_YEAR = "SELECT DISTINCT strftime('%Y', date) as year FROM transactions ORDER BY year ASC"
 CHECK_MONTH = "SELECT DISTINCT strftime('%m', date) as month FROM transactions WHERE strftime('%Y', date) = ? ORDER BY 1 ASC"
 
 
 ####################################################################################################################
 # Calulate ALL YEAR CREDIT vs DEBIT - ALL ACC
 ####################################################################################################################
-ALL_ACCOUNTS_ALL_YEARS_SUM = """SELECT
-                            strftime('%Y', date),
-                            ROUND(SUM(credit),2) AS total_deposits,
-                            ROUND(SUM(debit),2) AS total_debit
-                            FROM transactions
-                            WHERE category_id != (SELECT id FROM categories WHERE category = 'Internal')
-                            GROUP BY 1
-                            """
+ALL_ACCOUNTS_ALL_YEARS_SUM = """
+SELECT
+    strftime('%Y', date),
+    ROUND(SUM(credit),2) AS total_deposits,
+    ROUND(SUM(debit),2) AS total_debit
+FROM transactions
+WHERE category_id != (SELECT id FROM categories WHERE category = 'Internal')
+GROUP BY 1
+"""
 
 ####################################################################################################################
 # Calulate Income by month - ALL ACC
