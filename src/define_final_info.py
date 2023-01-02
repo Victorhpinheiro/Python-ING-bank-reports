@@ -149,8 +149,16 @@ class Month_by_month:
         ax.bar_label(rec, labels=[f'${x:,.2f}' for x in self.list_values], fontsize='large')
         ax.grid(True, alpha=0.4)
 
+        # Calculate the total for the month with investment and without it
+        total = sum(self.list_values)
+        inv_index = None
+        if 'Investment' in self.categories: inv_index = self.categories.index('Investment')
+
         if len(self.expenses) >= 1:
             final_text = "".join(self.expenses)
+            final_text += f"\n\n\n\n TOTAL MONTH : {total:,.2f}"
+            if inv_index != None:
+                final_text += f"\n TOTAL MONTH - INVEST : {total-self.list_values[inv_index]:,.2f}"
         else:
             final_text = None
 
@@ -301,7 +309,7 @@ class Last_week:
 
     def add_expense(self, date, expense, description):
         if len(self.expenses) < 1:
-            self.expenses.append(f"TOP 10 OTHER EXPENSES WEEK - {self.week}/{self.year}\n\n\n")
+            self.expenses.append(f"TOP 10 OTHER - {self.week}\n\n\n")
 
         self.expenses.append(f"{date}: ${expense:,.2f} - {description[:20]}\n\n")
 
@@ -335,8 +343,15 @@ class Last_week:
         ax.bar_label(rec, labels=[f'${x:,.2f}' for x in self.list_values], fontsize='large')
         ax.grid(True, alpha=0.4)
 
+        total = sum(self.list_values)
+        inv_index = None
+        if 'Investment' in self.categories: inv_index = self.categories.index('Investment')
+
         if len(self.expenses) >= 1:
             final_text = "".join(self.expenses)
+            final_text += f"\n\n\n\n TOTAL WEEK : {total:,.2f}"
+            if inv_index != None:
+                final_text += f"\n TOTAL MONTH - INVEST : {total-self.list_values[inv_index]:,.2f}"
         else:
             final_text = None
 
