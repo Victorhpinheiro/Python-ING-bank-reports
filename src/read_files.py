@@ -56,7 +56,7 @@ def read_csv(acc_name, file):
         try:
             with open(file, "r") as f:
                 csv_reader = csv.DictReader(f)
-                next(csv_reader)
+                
 
                 for line in csv_reader:
                     yield Row(

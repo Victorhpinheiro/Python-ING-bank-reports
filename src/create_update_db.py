@@ -87,6 +87,7 @@ def create_db(path):
             balance = row.get_balance()
             category = categories.set_category(desciption)
 
+
             cur.execute(
                 """INSERT OR IGNORE INTO transactions 
                     (account_id,
