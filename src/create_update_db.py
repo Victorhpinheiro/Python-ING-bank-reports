@@ -78,7 +78,7 @@ def create_db(path):
     # Read and populate transactions table
     for acc in files_to_feed_db:
         file_to_read = path + '\\' + acc + ".csv"
-        transactions_csv = read_files.read_csv(file, file_to_read)
+        transactions_csv = read_files.read_csv(acc, file_to_read)
         for row in transactions_csv:
             date = read_files.format_date(row.get_date())
             desciption = row.get_description()
