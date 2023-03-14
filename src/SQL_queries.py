@@ -37,7 +37,7 @@ ALL_ACCOUNTS_INCOME_MONTHLY_VAR = """SELECT
 # Calulate Expenses by category by month + top 5 expenses of the month - ALL ACC
 ####################################################################################################################
 ALL_ACCOUNTS_CAT_EXPENSES_MONTHLY_VAR = """SELECT
-                                    strftime('%Y/%m', date),
+                                    strftime('%Y/%m', date) AS date,
                                     category,
                                     ROUND(SUM(debit),2) AS debit
                                     FROM (SELECT * FROM transactions AS t JOIN categories AS c ON t.category_id = c.id JOIN acc_info AS a ON t.account_id = a.id)
